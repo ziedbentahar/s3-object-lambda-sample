@@ -5,3 +5,5 @@
 Full code and Github actions workflow for this bog post:
 
 //TODO
+
+![image](https://user-images.githubusercontent.com/6813975/216825078-a9a2e1be-ed83-438b-b9ee-bbfa4655e3df.png)
