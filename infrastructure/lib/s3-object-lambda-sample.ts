@@ -35,33 +35,33 @@ export class S3ObjectLambdaSample extends Stack {
       }
     );
 
-    const s3ObjectLambdaAccessPoint = new S3ObjectLambdaAccessPoint(
-      this,
-      "s3-object-lambda-access-point",
-      {
-        name: "s3-object-lambda-access-point",
-        objectLambdaConfiguration: {
-          supportingAccessPoint: `arn:aws:s3:${this.region}:${this.account}:accesspoint/${s3AccessPoint.name}`,
-          transformationConfigurations: [
-            {
-              actions: ["GetObject"],
-              contentTransformation: {
-                AwsLambda: {
-                  FunctionArn: contentTransfromationLambda.functionArn,
-                },
+    const accessPointName = "s3-object-lambda-access-point";
+
+    new S3ObjectLambdaAccessPoint(this, "s3-object-lambda-access-point", {
+      name: accessPointName,
+      objectLambdaConfiguration: {
+        supportingAccessPoint: `arn:aws:s3:${this.region}:${this.account}:accesspoint/${s3AccessPoint.name}`,
+        transformationConfigurations: [
+          {
+            actions: ["GetObject"],
+            contentTransformation: {
+              AwsLambda: {
+                FunctionArn: contentTransfromationLambda.functionArn,
               },
             },
-          ],
-        },
-      }
-    );
-
-    const writeObjectResponsePolicy = new PolicyStatement({
-      effect: Effect.ALLOW,
-      actions: ["s3-object-lambda:WriteGetObjectResponse"],
-      resources: ["*"],
+          },
+        ],
+      },
     });
 
-    contentTransfromationLambda.addToRolePolicy(writeObjectResponsePolicy);
+    contentTransfromationLambda.addToRolePolicy(
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        actions: ["s3-object-lambda:WriteGetObjectResponse"],
+        resources: [
+          `arn:aws:s3-object-lambda:${this.region}:${this.account}:accesspoint/${accessPointName}`,
+        ],
+      })
+    );
   }
 }
