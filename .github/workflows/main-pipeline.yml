@@ -1,4 +1,4 @@
-name: strapi on aws pipeline
+name: s3 object lambda sample pipeline
 
 on:
   push:
@@ -25,6 +25,11 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: eu-west-1
+
+    - name: Restore packages
+      run: |
+        cd src \
+         && npm install \
 
     - name: Build & Deploy S3 Object Lambda sample
       run: |
