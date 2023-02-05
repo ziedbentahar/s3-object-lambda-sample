@@ -1,7 +1,8 @@
 import { Duration, Stack, StackProps } from "aws-cdk-lib";
 import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
-import { Architecture } from "aws-cdk-lib/aws-lambda";
+import { Architecture, Runtime } from "aws-cdk-lib/aws-lambda";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
+import { RetentionDays } from "aws-cdk-lib/aws-logs";
 import { Bucket, CfnAccessPoint as S3AccessPoint } from "aws-cdk-lib/aws-s3";
 import { CfnAccessPoint as S3ObjectLambdaAccessPoint } from "aws-cdk-lib/aws-s3objectlambda";
 import { Construct } from "constructs";
@@ -23,8 +24,13 @@ export class S3ObjectLambdaSample extends Stack {
         functionName: "remove-sensitive-fields",
         handler: "handler",
         memorySize: 512,
-        architecture: Architecture.ARM_64,
         timeout: Duration.seconds(10),
+        runtime: Runtime.NODEJS_18_X,
+        architecture: Architecture.ARM_64,
+        logRetention: RetentionDays.THREE_DAYS,
+        environment: {
+          NODE_OPTIONS: "--enable-source-maps",
+        },
       }
     );
 

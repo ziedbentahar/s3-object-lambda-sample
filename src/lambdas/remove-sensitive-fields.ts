@@ -8,7 +8,7 @@ export const handler = async (event: S3ObjectLambdaEvent) => {
   const response = await fetch(event.getObjectContext.inputS3Url);
   let fileContentInJson = (await response.json()) as InventoryItem[];
 
-  const cleanedContent = fileContentInJson.map(
+  const filteredContent = fileContentInJson.map(
     ({ contactEmail, itemContratReference, itemRating, ...rest }) => rest
   );
 
@@ -16,7 +16,7 @@ export const handler = async (event: S3ObjectLambdaEvent) => {
     .writeGetObjectResponse({
       RequestRoute: event.getObjectContext.outputRoute,
       RequestToken: event.getObjectContext.outputToken,
-      Body: JSON.stringify(cleanedContent),
+      Body: JSON.stringify(filteredContent),
     })
     .promise();
 
