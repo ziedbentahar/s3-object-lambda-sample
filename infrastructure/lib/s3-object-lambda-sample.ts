@@ -1,5 +1,6 @@
 import { Duration, Stack, StackProps } from "aws-cdk-lib";
 import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
+import { Architecture } from "aws-cdk-lib/aws-lambda";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Bucket, CfnAccessPoint as S3AccessPoint } from "aws-cdk-lib/aws-s3";
 import { CfnAccessPoint as S3ObjectLambdaAccessPoint } from "aws-cdk-lib/aws-s3objectlambda";
@@ -16,12 +17,13 @@ export class S3ObjectLambdaSample extends Stack {
 
     const contentTransfromationLambda = new NodejsFunction(
       this,
-      "SensitiveFieldsRemoverLambda",
+      "sensitive-fields-remover-lambda",
       {
         entry: resolve("../src/lambdas/remove-sensitive-fields.ts"),
         functionName: "remove-sensitive-fields",
         handler: "handler",
         memorySize: 512,
+        architecture: Architecture.ARM_64,
         timeout: Duration.seconds(10),
       }
     );
@@ -36,7 +38,6 @@ export class S3ObjectLambdaSample extends Stack {
     );
 
     const accessPointName = "s3-object-lambda-access-point";
-
     new S3ObjectLambdaAccessPoint(this, "s3-object-lambda-access-point", {
       name: accessPointName,
       objectLambdaConfiguration: {
