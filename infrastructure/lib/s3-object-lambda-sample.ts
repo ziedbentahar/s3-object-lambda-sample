@@ -12,11 +12,7 @@ export class S3ObjectLambdaSample extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const bucket = new Bucket(this, "sample-bucket", {
-      bucketName: "s3-object-lambda-sample-bucket",
-    });
-
-    const contentTransfromationLambda = new NodejsFunction(
+    const contentFilteringLambda = new NodejsFunction(
       this,
       "sensitive-fields-remover-lambda",
       {
@@ -33,6 +29,10 @@ export class S3ObjectLambdaSample extends Stack {
         },
       }
     );
+
+    const bucket = new Bucket(this, "sample-bucket", {
+      bucketName: "s3-object-lambda-sample-bucket",
+    });
 
     const s3AccessPoint = new S3AccessPoint(
       this,
@@ -53,7 +53,7 @@ export class S3ObjectLambdaSample extends Stack {
             actions: ["GetObject"],
             contentTransformation: {
               AwsLambda: {
-                FunctionArn: contentTransfromationLambda.functionArn,
+                FunctionArn: contentFilteringLambda.functionArn,
               },
             },
           },
@@ -61,7 +61,7 @@ export class S3ObjectLambdaSample extends Stack {
       },
     });
 
-    contentTransfromationLambda.addToRolePolicy(
+    contentFilteringLambda.addToRolePolicy(
       new PolicyStatement({
         effect: Effect.ALLOW,
         actions: ["s3-object-lambda:WriteGetObjectResponse"],
