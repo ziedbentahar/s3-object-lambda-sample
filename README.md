@@ -4,6 +4,6 @@
 
 Full code and Github actions workflow for this bog post:
 
-//TODO
+https://medium.com/@zied-ben-tahar/transform-objects-on-the-fly-using-s3-object-lambda-with-nodejs-and-cdk-3f01133d9d18
 
 ![image](https://user-images.githubusercontent.com/6813975/216825078-a9a2e1be-ed83-438b-b9ee-bbfa4655e3df.png)
